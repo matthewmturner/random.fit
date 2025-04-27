@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>random.fit</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      background-color: #f8f9fa;
+    }
+    .container {
+      max-width: 800px;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 20px 0;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .workout-card {
+      background-color: #f1f1f1;
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>random.fit</h1>
+    <p>Welcome to random.fit - Your fitness randomizer</p>
+    <button id="randomize-btn">Generate Random Workout</button>
+    <div id="workout-result"></div>
+  </div>
+
+  <script>
+    document.getElementById('randomize-btn').addEventListener('click', function() {
+      // Sample workout generation (replace with actual logic)
+      const workouts = [
+        'Push-ups: 3 sets of 15 reps',
+        'Squats: 4 sets of 12 reps',
+        'Plank: 3 sets of 45 seconds',
+        'Jumping Jacks: 3 sets of 30 seconds',
+        'Mountain Climbers: 3 sets of 30 seconds'
+      ];
+
+      const randomWorkout = workouts[Math.floor(Math.random() * workouts.length)];
+      document.getElementById('workout-result').innerHTML = 
+        `<div class="workout-card">${randomWorkout}</div>`;
+    });
+  </script>
+</body>
+</html>
