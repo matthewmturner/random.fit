@@ -11,8 +11,24 @@
   <div class="max-w-lg p-6 bg-white rounded-lg shadow-md text-center">
     <h1 class="text-2xl font-semibold text-gray-900">random.fit</h1>
     <p class="mt-2">Welcome to random.fit - Your fitness randomizer</p>
+    
+    <div class="mt-4 mb-4">
+      <p class="mb-2 font-medium">Choose your workout duration:</p>
+      <div class="flex justify-center space-x-3">
+        <button data-duration="30" class="duration-btn bg-blue-100 hover:bg-blue-200 text-blue-800 py-2 px-4 rounded-md font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+          30 min
+        </button>
+        <button data-duration="45" class="duration-btn bg-blue-100 hover:bg-blue-200 text-blue-800 py-2 px-4 rounded-md font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+          45 min
+        </button>
+        <button data-duration="60" class="duration-btn bg-blue-100 hover:bg-blue-200 text-blue-800 py-2 px-4 rounded-md font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+          1 hour
+        </button>
+      </div>
+    </div>
+    
     <button id="randomize-btn" aria-label="Generate a random workout" 
-      class="mt-5 mb-5 bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-md 
+      class="mt-3 mb-5 bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-md 
       font-medium text-base shadow-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500">
       Generate Random Workout
     </button>
@@ -20,19 +36,151 @@
   </div>
 
   <script>
+    // Duration selection
+    let selectedDuration = 30; // Default to 30 minutes
+    
+    document.querySelectorAll('.duration-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        // Remove active class from all buttons
+        document.querySelectorAll('.duration-btn').forEach(btn => {
+          btn.classList.remove('bg-blue-500', 'text-white');
+          btn.classList.add('bg-blue-100', 'text-blue-800');
+        });
+        
+        // Add active class to the clicked button
+        this.classList.remove('bg-blue-100', 'text-blue-800');
+        this.classList.add('bg-blue-500', 'text-white');
+        
+        // Set selected duration
+        selectedDuration = parseInt(this.getAttribute('data-duration'));
+      });
+    });
+    
+    // Set the default selected button
+    document.querySelector('[data-duration="30"]').classList.remove('bg-blue-100', 'text-blue-800');
+    document.querySelector('[data-duration="30"]').classList.add('bg-blue-500', 'text-white');
+    
+    // Workout generation
     document.getElementById('randomize-btn').addEventListener('click', function() {
-      // Sample workout generation (replace with actual logic)
-      const workouts = [
-        'Push-ups: 3 sets of 15 reps',
-        'Squats: 4 sets of 12 reps',
-        'Plank: 3 sets of 45 seconds',
-        'Jumping Jacks: 3 sets of 30 seconds',
-        'Mountain Climbers: 3 sets of 30 seconds'
-      ];
-
-      const randomWorkout = workouts[Math.floor(Math.random() * workouts.length)];
+      const exercises = {
+        cardio: [
+          'Jumping Jacks', 
+          'High Knees', 
+          'Mountain Climbers', 
+          'Burpees', 
+          'Jump Rope',
+          'Lateral Jumps'
+        ],
+        strength: [
+          'Push-ups', 
+          'Squats', 
+          'Lunges', 
+          'Plank', 
+          'Crunches',
+          'Tricep Dips',
+          'Glute Bridges',
+          'Superman Holds'
+        ],
+        mobility: [
+          'Arm Circles',
+          'Hip Rotations',
+          'Shoulder Stretches',
+          'Standing Side Bends',
+          'Calf Raises'
+        ]
+      };
+      
+      // Generate workout based on duration
+      let workoutHTML = '';
+      let numExercises = 0;
+      
+      switch(selectedDuration) {
+        case 30:
+          numExercises = 5;
+          break;
+        case 45:
+          numExercises = 7;
+          break;
+        case 60:
+          numExercises = 10;
+          break;
+      }
+      
+      workoutHTML += `<h3 class="font-semibold text-xl mb-3">${selectedDuration} Minute Workout</h3>`;
+      workoutHTML += '<ul class="text-left space-y-2">';
+      
+      // Select random exercises
+      const selectedExercises = [];
+      
+      // Always include some cardio
+      const cardioCount = Math.ceil(numExercises * 0.3);
+      for (let i = 0; i < cardioCount; i++) {
+        const randomIndex = Math.floor(Math.random() * exercises.cardio.length);
+        selectedExercises.push({
+          name: exercises.cardio[randomIndex],
+          type: 'cardio',
+          sets: 3,
+          reps: Math.floor(Math.random() * 10) + 15,
+          time: Math.floor(Math.random() * 4) * 15 + 30
+        });
+      }
+      
+      // Add strength exercises
+      const strengthCount = Math.ceil(numExercises * 0.5);
+      for (let i = 0; i < strengthCount; i++) {
+        const randomIndex = Math.floor(Math.random() * exercises.strength.length);
+        selectedExercises.push({
+          name: exercises.strength[randomIndex],
+          type: 'strength',
+          sets: Math.floor(Math.random() * 2) + 3,
+          reps: Math.floor(Math.random() * 8) + 8
+        });
+      }
+      
+      // Add mobility exercises
+      const mobilityCount = numExercises - cardioCount - strengthCount;
+      for (let i = 0; i < mobilityCount; i++) {
+        const randomIndex = Math.floor(Math.random() * exercises.mobility.length);
+        selectedExercises.push({
+          name: exercises.mobility[randomIndex],
+          type: 'mobility',
+          sets: Math.floor(Math.random() * 2) + 2,
+          reps: Math.floor(Math.random() * 5) + 8,
+          time: Math.floor(Math.random() * 3) * 10 + 20
+        });
+      }
+      
+      // Shuffle exercises
+      for (let i = selectedExercises.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [selectedExercises[i], selectedExercises[j]] = [selectedExercises[j], selectedExercises[i]];
+      }
+      
+      // Create workout list
+      selectedExercises.forEach((exercise, index) => {
+        let exerciseText = '';
+        if (exercise.type === 'cardio') {
+          exerciseText = `${exercise.sets} sets of ${exercise.time} seconds`;
+        } else if (exercise.type === 'strength') {
+          exerciseText = `${exercise.sets} sets of ${exercise.reps} reps`;
+        } else { // mobility
+          if (Math.random() > 0.5) {
+            exerciseText = `${exercise.sets} sets of ${exercise.reps} reps`;
+          } else {
+            exerciseText = `${exercise.sets} sets of ${exercise.time} seconds`;
+          }
+        }
+        
+        workoutHTML += `<li class="py-2 px-3 ${index % 2 === 0 ? 'bg-gray-50' : ''} rounded">
+          <span class="font-medium">${exercise.name}:</span> ${exerciseText}
+        </li>`;
+      });
+      
+      workoutHTML += '</ul>';
+      workoutHTML += '<p class="mt-4 text-sm text-gray-600">Rest 60 seconds between sets and 90 seconds between exercises.</p>';
+      
       document.getElementById('workout-result').innerHTML = 
-        `<div class="mt-5 p-5 bg-gray-100 rounded-md border border-gray-200 shadow-sm animate-[fadeIn_0.3s_ease-out]" role="region" aria-live="polite">${randomWorkout}</div>`;
+        `<div class="mt-5 p-5 bg-gray-100 rounded-md border border-gray-200 shadow-sm animate-[fadeIn_0.3s_ease-out]" role="region" aria-live="polite">${workoutHTML}</div>`;
     });
 
     // Add the fadeIn animation
