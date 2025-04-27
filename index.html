@@ -4,54 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>random.fit</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      min-height: 100vh;
-      background-color: #f8f9fa;
-    }
-    .container {
-      max-width: 800px;
-      padding: 20px;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-    h1 {
-      color: #333;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-      margin: 20px 0;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    .workout-card {
-      background-color: #f1f1f1;
-      padding: 15px;
-      border-radius: 4px;
-      margin-top: 20px;
-    }
-  </style>
+  <!-- Import Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div class="container">
-    <h1>random.fit</h1>
-    <p>Welcome to random.fit - Your fitness randomizer</p>
-    <button id="randomize-btn">Generate Random Workout</button>
+<body class="bg-gray-50 text-gray-900 flex justify-center min-h-screen p-5">
+  <div class="max-w-lg p-6 bg-white rounded-lg shadow-md text-center">
+    <h1 class="text-2xl font-semibold text-gray-900">random.fit</h1>
+    <p class="mt-2">Welcome to random.fit - Your fitness randomizer</p>
+    <button id="randomize-btn" aria-label="Generate a random workout" 
+      class="mt-5 mb-5 bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-md 
+      font-medium text-base shadow-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500">
+      Generate Random Workout
+    </button>
     <div id="workout-result"></div>
   </div>
 
@@ -68,8 +32,22 @@
 
       const randomWorkout = workouts[Math.floor(Math.random() * workouts.length)];
       document.getElementById('workout-result').innerHTML = 
-        `<div class="workout-card">${randomWorkout}</div>`;
+        `<div class="mt-5 p-5 bg-gray-100 rounded-md border border-gray-200 shadow-sm animate-[fadeIn_0.3s_ease-out]" role="region" aria-live="polite">${randomWorkout}</div>`;
     });
+
+    // Add the fadeIn animation
+    tailwind.config = {
+      theme: {
+        extend: {
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            }
+          }
+        }
+      }
+    }
   </script>
 </body>
 </html>
