@@ -13,7 +13,9 @@
     <!-- Import Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="bg-gray-50 text-gray-900 flex justify-center p-5 transition-all duration-300">
+  <body
+    class="bg-gray-50 text-gray-900 flex justify-center p-5 transition-all duration-300"
+  >
     <div class="max-w-lg p-6 bg-white rounded-lg shadow-md text-center">
       <h1 class="text-2xl font-semibold text-gray-900 hidden">random.fit</h1>
       <div class="mt-4 mb-4">
@@ -104,33 +106,16 @@
       // Workout generation
       document
         .getElementById("randomize-btn")
-        .addEventListener("click", function () {
+        .addEventListener("click", async function () {
+          // Fetch workouts data from workouts.json
+          const response = await fetch("/workouts.json");
+          const data = await response.json();
+
+          // Organize exercises by category
           const exercises = {
-            cardio: [
-              "Jumping Jacks",
-              "High Knees",
-              "Mountain Climbers",
-              "Burpees",
-              "Jump Rope",
-              "Lateral Jumps",
-            ],
-            strength: [
-              "Push-ups",
-              "Squats",
-              "Lunges",
-              "Plank",
-              "Crunches",
-              "Tricep Dips",
-              "Glute Bridges",
-              "Superman Holds",
-            ],
-            mobility: [
-              "Arm Circles",
-              "Hip Rotations",
-              "Shoulder Stretches",
-              "Standing Side Bends",
-              "Calf Raises",
-            ],
+            cardio: data.exercises.filter((ex) => ex.category === "cardio"),
+            strength: data.exercises.filter((ex) => ex.category === "strength"),
+            mobility: data.exercises.filter((ex) => ex.category === "mobility"),
           };
 
           // Generate workout based on duration
@@ -161,12 +146,18 @@
             const randomIndex = Math.floor(
               Math.random() * exercises.cardio.length,
             );
+            const exercise = exercises.cardio[randomIndex];
             selectedExercises.push({
-              name: exercises.cardio[randomIndex],
-              type: "cardio",
+              ...exercise,
               sets: 3,
-              reps: Math.floor(Math.random() * 10) + 15,
-              time: Math.floor(Math.random() * 4) * 15 + 30,
+              reps:
+                exercise.type === "reps"
+                  ? Math.floor(Math.random() * 10) + 15
+                  : undefined,
+              time:
+                exercise.type === "time"
+                  ? Math.floor(Math.random() * 4) * 15 + 30
+                  : undefined,
             });
           }
 
@@ -176,11 +167,18 @@
             const randomIndex = Math.floor(
               Math.random() * exercises.strength.length,
             );
+            const exercise = exercises.strength[randomIndex];
             selectedExercises.push({
-              name: exercises.strength[randomIndex],
-              type: "strength",
+              ...exercise,
               sets: Math.floor(Math.random() * 2) + 3,
-              reps: Math.floor(Math.random() * 8) + 8,
+              reps:
+                exercise.type === "reps"
+                  ? Math.floor(Math.random() * 8) + 8
+                  : undefined,
+              time:
+                exercise.type === "time"
+                  ? Math.floor(Math.random() * 4) * 15 + 30
+                  : undefined,
             });
           }
 
@@ -190,12 +188,18 @@
             const randomIndex = Math.floor(
               Math.random() * exercises.mobility.length,
             );
+            const exercise = exercises.mobility[randomIndex];
             selectedExercises.push({
-              name: exercises.mobility[randomIndex],
-              type: "mobility",
+              ...exercise,
               sets: Math.floor(Math.random() * 2) + 2,
-              reps: Math.floor(Math.random() * 5) + 8,
-              time: Math.floor(Math.random() * 3) * 10 + 20,
+              reps:
+                exercise.type === "reps"
+                  ? Math.floor(Math.random() * 5) + 8
+                  : undefined,
+              time:
+                exercise.type === "time"
+                  ? Math.floor(Math.random() * 3) * 10 + 20
+                  : undefined,
             });
           }
 
@@ -211,17 +215,10 @@
           // Create workout list
           selectedExercises.forEach((exercise, index) => {
             let exerciseText = "";
-            if (exercise.type === "cardio") {
+            if (exercise.type === "time") {
               exerciseText = `${exercise.sets} sets of ${exercise.time} seconds`;
-            } else if (exercise.type === "strength") {
+            } else if (exercise.type === "reps") {
               exerciseText = `${exercise.sets} sets of ${exercise.reps} reps`;
-            } else {
-              // mobility
-              if (Math.random() > 0.5) {
-                exerciseText = `${exercise.sets} sets of ${exercise.reps} reps`;
-              } else {
-                exerciseText = `${exercise.sets} sets of ${exercise.time} seconds`;
-              }
             }
 
             workoutHTML += `<li class="py-2 px-3 ${
