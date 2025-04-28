@@ -42,6 +42,36 @@
         </div>
       </div>
 
+      <div class="mt-4 mb-4">
+        <p class="mb-2 font-medium">Choose workout category:</p>
+        <div class="flex justify-center space-x-3">
+          <button
+            data-category="bodyweight"
+            class="category-btn bg-green-100 hover:bg-green-200 text-green-800 py-2 px-4 rounded-md font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-400"
+          >
+            Bodyweight
+          </button>
+          <button
+            data-category="strength"
+            class="category-btn bg-green-100 hover:bg-green-200 text-green-800 py-2 px-4 rounded-md font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-400"
+          >
+            Strength
+          </button>
+          <button
+            data-category="core"
+            class="category-btn bg-green-100 hover:bg-green-200 text-green-800 py-2 px-4 rounded-md font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-400"
+          >
+            Core
+          </button>
+        </div>
+        <button
+          id="random-category-btn"
+          class="mt-2 bg-green-100 hover:bg-green-200 text-green-800 py-1 px-3 rounded-md font-medium text-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-400"
+        >
+          Random Category
+        </button>
+      </div>
+
       <button
         id="randomize-btn"
         aria-label="Generate a random workout"
@@ -77,6 +107,7 @@
     <script>
       // Duration selection
       let selectedDuration = 30; // Default to 30 minutes
+      let selectedCategory = "bodyweight"; // Default to bodyweight
 
       document.querySelectorAll(".duration-btn").forEach((button) => {
         button.addEventListener("click", function () {
@@ -95,7 +126,25 @@
         });
       });
 
-      // Set the default selected button
+      // Category selection
+      document.querySelectorAll(".category-btn").forEach((button) => {
+        button.addEventListener("click", function () {
+          // Remove active class from all buttons
+          document.querySelectorAll(".category-btn").forEach((btn) => {
+            btn.classList.remove("bg-green-500", "text-white");
+            btn.classList.add("bg-green-100", "text-green-800");
+          });
+
+          // Add active class to the clicked button
+          this.classList.remove("bg-green-100", "text-green-800");
+          this.classList.add("bg-green-500", "text-white");
+
+          // Set selected category
+          selectedCategory = this.getAttribute("data-category");
+        });
+      });
+
+      // Set the default selected buttons
       document
         .querySelector('[data-duration="30"]')
         .classList.remove("bg-blue-100", "text-blue-800");
@@ -103,20 +152,55 @@
         .querySelector('[data-duration="30"]')
         .classList.add("bg-blue-500", "text-white");
 
+      document
+        .querySelector('[data-category="bodyweight"]')
+        .classList.remove("bg-green-100", "text-green-800");
+      document
+        .querySelector('[data-category="bodyweight"]')
+        .classList.add("bg-green-500", "text-white");
+
+      // Random category selection
+      document
+        .getElementById("random-category-btn")
+        .addEventListener("click", function () {
+          // Get all available categories
+          const categoryButtons = document.querySelectorAll(".category-btn");
+          const categories = Array.from(categoryButtons).map((button) =>
+            button.getAttribute("data-category"),
+          );
+
+          // Select a random category
+          const randomIndex = Math.floor(Math.random() * categories.length);
+          const randomCategory = categories[randomIndex];
+
+          // Update UI to show the selected category
+          categoryButtons.forEach((btn) => {
+            btn.classList.remove("bg-green-500", "text-white");
+            btn.classList.add("bg-green-100", "text-green-800");
+
+            if (btn.getAttribute("data-category") === randomCategory) {
+              btn.classList.remove("bg-green-100", "text-green-800");
+              btn.classList.add("bg-green-500", "text-white");
+            }
+          });
+
+          // Update the selected category variable
+          selectedCategory = randomCategory;
+        });
+
       // Workout generation
       document
         .getElementById("randomize-btn")
         .addEventListener("click", async function () {
-          // Fetch workouts data from workouts.json
-          const response = await fetch("/workouts.json");
+          // Fetch workouts data from workouts.json with cache-busting query parameter
+          const cacheBuster = new Date().getTime();
+          const response = await fetch(`/workouts.json?v=${cacheBuster}`);
           const data = await response.json();
 
-          // Organize exercises by category
-          const exercises = {
-            cardio: data.exercises.filter((ex) => ex.category === "cardio"),
-            strength: data.exercises.filter((ex) => ex.category === "strength"),
-            mobility: data.exercises.filter((ex) => ex.category === "mobility"),
-          };
+          // Filter exercises by selected category
+          const categoryExercises = data.exercises.filter(
+            (ex) => ex.category === selectedCategory,
+          );
 
           // Generate workout based on duration
           let workoutHTML = "";
@@ -134,40 +218,33 @@
               break;
           }
 
-          workoutHTML += `<h3 class="font-semibold text-xl mb-3">${selectedDuration} Minute Workout</h3>`;
+          // Ensure we don't try to select more exercises than are available
+          numExercises = Math.min(numExercises, categoryExercises.length);
+
+          workoutHTML += `<h3 class="font-semibold text-xl mb-3">${selectedDuration} Minute ${
+            selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)
+          } Workout</h3>`;
           workoutHTML += '<ul class="text-left space-y-2">';
 
           // Select random exercises
           const selectedExercises = [];
 
-          // Always include some cardio
-          const cardioCount = Math.ceil(numExercises * 0.3);
-          for (let i = 0; i < cardioCount; i++) {
-            const randomIndex = Math.floor(
-              Math.random() * exercises.cardio.length,
-            );
-            const exercise = exercises.cardio[randomIndex];
-            selectedExercises.push({
-              ...exercise,
-              sets: 3,
-              reps:
-                exercise.type === "reps"
-                  ? Math.floor(Math.random() * 10) + 15
-                  : undefined,
-              time:
-                exercise.type === "time"
-                  ? Math.floor(Math.random() * 4) * 15 + 30
-                  : undefined,
-            });
-          }
+          // Create a copy of the exercises array to remove exercises as they're selected
+          // This prevents selecting the same exercise twice
+          const availableExercises = [...categoryExercises];
 
-          // Add strength exercises
-          const strengthCount = Math.ceil(numExercises * 0.5);
-          for (let i = 0; i < strengthCount; i++) {
+          // Select exercises for the workout
+          for (let i = 0; i < numExercises; i++) {
+            if (availableExercises.length === 0) break;
+
             const randomIndex = Math.floor(
-              Math.random() * exercises.strength.length,
+              Math.random() * availableExercises.length,
             );
-            const exercise = exercises.strength[randomIndex];
+            const exercise = availableExercises[randomIndex];
+
+            // Remove the selected exercise from the available pool
+            availableExercises.splice(randomIndex, 1);
+
             selectedExercises.push({
               ...exercise,
               sets: Math.floor(Math.random() * 2) + 3,
@@ -178,27 +255,6 @@
               time:
                 exercise.type === "time"
                   ? Math.floor(Math.random() * 4) * 15 + 30
-                  : undefined,
-            });
-          }
-
-          // Add mobility exercises
-          const mobilityCount = numExercises - cardioCount - strengthCount;
-          for (let i = 0; i < mobilityCount; i++) {
-            const randomIndex = Math.floor(
-              Math.random() * exercises.mobility.length,
-            );
-            const exercise = exercises.mobility[randomIndex];
-            selectedExercises.push({
-              ...exercise,
-              sets: Math.floor(Math.random() * 2) + 2,
-              reps:
-                exercise.type === "reps"
-                  ? Math.floor(Math.random() * 5) + 8
-                  : undefined,
-              time:
-                exercise.type === "time"
-                  ? Math.floor(Math.random() * 3) * 10 + 20
                   : undefined,
             });
           }

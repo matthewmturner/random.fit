@@ -1,99 +1,154 @@
 {
-  "exercises": [
-    {
-      "name": "Jumping Jacks",
-      "type": "time",
-      "category": "cardio"
-    },
-    {
-      "name": "High Knees",
-      "type": "time",
-      "category": "cardio"
-    },
-    {
-      "name": "Mountain Climbers",
-      "type": "time",
-      "category": "cardio"
-    },
-    {
-      "name": "Burpees",
-      "type": "reps",
-      "category": "cardio"
-    },
-    {
-      "name": "Jump Rope",
-      "type": "time",
-      "category": "cardio"
-    },
-    {
-      "name": "Lateral Jumps",
-      "type": "time",
-      "category": "cardio"
-    },
-    {
-      "name": "Push-ups",
-      "type": "reps",
-      "category": "strength"
-    },
-    {
-      "name": "Squats",
-      "type": "reps",
-      "category": "strength"
-    },
-    {
-      "name": "Lunges",
-      "type": "reps",
-      "category": "strength"
-    },
-    {
-      "name": "Plank",
-      "type": "time",
-      "category": "strength"
-    },
-    {
-      "name": "Crunches",
-      "type": "reps",
-      "category": "strength"
-    },
-    {
-      "name": "Tricep Dips",
-      "type": "reps",
-      "category": "strength"
-    },
-    {
-      "name": "Glute Bridges",
-      "type": "reps",
-      "category": "strength"
-    },
-    {
-      "name": "Superman Holds",
-      "type": "time",
-      "category": "strength"
-    },
-    {
-      "name": "Arm Circles",
-      "type": "reps",
-      "category": "mobility"
-    },
-    {
-      "name": "Hip Rotations",
-      "type": "reps",
-      "category": "mobility"
-    },
-    {
-      "name": "Shoulder Stretches",
-      "type": "time",
-      "category": "mobility"
-    },
-    {
-      "name": "Standing Side Bends",
-      "type": "reps",
-      "category": "mobility"
-    },
-    {
-      "name": "Calf Raises",
-      "type": "reps",
-      "category": "mobility"
-    }
-  ]
+    "exercises": [
+        {
+            "name": "Push-ups",
+            "type": "reps",
+            "category": "bodyweight"
+        },
+        {
+            "name": "Bodyweight Squats",
+            "type": "reps",
+            "category": "bodyweight"
+        },
+        {
+            "name": "Lunges",
+            "type": "reps",
+            "category": "bodyweight"
+        },
+        {
+            "name": "Burpees",
+            "type": "reps",
+            "category": "bodyweight"
+        },
+        {
+            "name": "Mountain Climbers",
+            "type": "time",
+            "category": "bodyweight"
+        },
+        {
+            "name": "Jumping Jacks",
+            "type": "time",
+            "category": "bodyweight"
+        },
+        {
+            "name": "High Knees",
+            "type": "time",
+            "category": "bodyweight"
+        },
+        {
+            "name": "Tricep Dips",
+            "type": "reps",
+            "category": "bodyweight"
+        },
+        {
+            "name": "Jumping Lunges",
+            "type": "reps",
+            "category": "bodyweight"
+        },
+        {
+            "name": "Lateral Jumps",
+            "type": "time",
+            "category": "bodyweight"
+        },
+        {
+            "name": "Bench Press",
+            "type": "reps",
+            "category": "strength"
+        },
+        {
+            "name": "Deadlift",
+            "type": "reps",
+            "category": "strength"
+        },
+        {
+            "name": "Barbell Squats",
+            "type": "reps",
+            "category": "strength"
+        },
+        {
+            "name": "Shoulder Press",
+            "type": "reps",
+            "category": "strength"
+        },
+        {
+            "name": "Bent-over Rows",
+            "type": "reps",
+            "category": "strength"
+        },
+        {
+            "name": "Bicep Curls",
+            "type": "reps",
+            "category": "strength"
+        },
+        {
+            "name": "Tricep Extensions",
+            "type": "reps",
+            "category": "strength"
+        },
+        {
+            "name": "Lat Pulldowns",
+            "type": "reps",
+            "category": "strength"
+        },
+        {
+            "name": "Leg Press",
+            "type": "reps",
+            "category": "strength"
+        },
+        {
+            "name": "Dumbbell Lunges",
+            "type": "reps",
+            "category": "strength"
+        },
+        {
+            "name": "Sit-ups",
+            "type": "reps",
+            "category": "core"
+        },
+        {
+            "name": "Crunches",
+            "type": "reps",
+            "category": "core"
+        },
+        {
+            "name": "Plank",
+            "type": "time",
+            "category": "core"
+        },
+        {
+            "name": "Russian Twists",
+            "type": "reps",
+            "category": "core"
+        },
+        {
+            "name": "Bicycle Crunches",
+            "type": "reps",
+            "category": "core"
+        },
+        {
+            "name": "Leg Raises",
+            "type": "reps",
+            "category": "core"
+        },
+        {
+            "name": "Side Planks",
+            "type": "time",
+            "category": "core"
+        },
+        {
+            "name": "Mountain Climbers",
+            "type": "time",
+            "category": "core"
+        },
+        {
+            "name": "Superman Holds",
+            "type": "time",
+            "category": "core"
+        },
+        {
+            "name": "Flutter Kicks",
+            "type": "reps",
+            "category": "core"
+        }
+    ]
 }
