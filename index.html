@@ -50,6 +50,19 @@
         Generate Random Workout
       </button>
       <div id="workout-result"></div>
+      
+      <div id="workout-timer" class="hidden mt-6">
+        <button 
+          id="start-workout-btn"
+          class="bg-purple-600 hover:bg-purple-700 text-white py-3 px-6 rounded-md font-medium text-base shadow-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        >
+          Start Workout
+        </button>
+        <div id="progress-container" class="hidden mt-4 w-full h-8 bg-gray-200 rounded-full overflow-hidden">
+          <div id="progress-bar" class="h-full bg-purple-600 rounded-full" style="width: 0%"></div>
+        </div>
+        <p id="timer-display" class="mt-2 text-lg font-semibold hidden">00:00:00</p>
+      </div>
     </div>
 
     <script>
@@ -250,6 +263,81 @@
             });
         });
       }
+
+      // Workout Timer Functionality
+      document.getElementById("randomize-btn").addEventListener("click", function() {
+        // Show the workout timer section when a workout is generated
+        document.getElementById("workout-timer").classList.remove("hidden");
+      });
+
+      // Start Workout button functionality
+      document.getElementById("start-workout-btn").addEventListener("click", function() {
+        const startTime = Date.now();
+        const durationMs = selectedDuration * 60 * 1000; // Convert minutes to milliseconds
+        
+        // Show progress container and timer display
+        const progressContainer = document.getElementById("progress-container");
+        progressContainer.classList.remove("hidden");
+        
+        const timerDisplay = document.getElementById("timer-display");
+        timerDisplay.classList.remove("hidden");
+        
+        // Hide start button
+        this.classList.add("hidden");
+        
+        // Update progress bar and timer
+        const progressBar = document.getElementById("progress-bar");
+        
+        const timer = setInterval(() => {
+          const elapsedTime = Date.now() - startTime;
+          const progress = Math.min((elapsedTime / durationMs) * 100, 100);
+          
+          // Update progress bar width
+          progressBar.style.width = `${progress}%`;
+          
+          // Update timer display
+          const elapsedSeconds = Math.floor(elapsedTime / 1000);
+          const hours = Math.floor(elapsedSeconds / 3600);
+          const minutes = Math.floor((elapsedSeconds % 3600) / 60);
+          const seconds = elapsedSeconds % 60;
+          
+          timerDisplay.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+          
+          // If workout is complete
+          if (elapsedTime >= durationMs) {
+            clearInterval(timer);
+            progressBar.style.width = "100%";
+            
+            // Show a completion message or reset button
+            timerDisplay.textContent = "Workout Complete!";
+            
+            // Add reset button
+            const resetBtn = document.createElement("button");
+            resetBtn.textContent = "Reset";
+            resetBtn.className = "mt-3 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md font-medium text-sm transition-colors duration-200";
+            resetBtn.addEventListener("click", function() {
+              // Reset timer display
+              document.getElementById("timer-display").textContent = "00:00:00";
+              document.getElementById("timer-display").classList.add("hidden");
+              
+              // Hide progress container
+              progressContainer.classList.add("hidden");
+              
+              // Reset progress bar
+              progressBar.style.width = "0%";
+              
+              // Show start button
+              document.getElementById("start-workout-btn").classList.remove("hidden");
+              
+              // Remove reset button
+              this.remove();
+            });
+            
+            // Add reset button after timer display
+            timerDisplay.parentNode.insertBefore(resetBtn, timerDisplay.nextSibling);
+          }
+        }, 100);
+      });
     </script>
   </body>
 </html>
