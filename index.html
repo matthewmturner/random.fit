@@ -570,9 +570,13 @@
             timings.warmup.forEach(timing => {
               const indicator = timing.element.querySelector('.exercise-indicator');
               if (elapsedSeconds >= timing.endTime) {
-                // Exercise should be complete
-                indicator.classList.remove('bg-gray-300');
+                // Exercise is complete
+                indicator.classList.remove('bg-gray-300', 'bg-orange-500');
                 indicator.classList.add('bg-green-500');
+              } else if (elapsedSeconds >= timing.startTime && elapsedSeconds < timing.endTime) {
+                // Exercise is in progress
+                indicator.classList.remove('bg-gray-300', 'bg-green-500');
+                indicator.classList.add('bg-orange-500');
               }
             });
             
@@ -580,9 +584,13 @@
             timings.exercises.forEach(exercise => {
               exercise.sets.forEach(set => {
                 if (elapsedSeconds >= set.endTime) {
-                  // Set should be complete
-                  set.element.classList.remove('bg-gray-300');
+                  // Set is complete
+                  set.element.classList.remove('bg-gray-300', 'bg-orange-500');
                   set.element.classList.add('bg-green-500');
+                } else if (elapsedSeconds >= set.startTime && elapsedSeconds < set.endTime) {
+                  // Set is in progress
+                  set.element.classList.remove('bg-gray-300', 'bg-green-500');
+                  set.element.classList.add('bg-orange-500');
                 }
               });
             });
@@ -591,9 +599,13 @@
             timings.cooldown.forEach(timing => {
               const indicator = timing.element.querySelector('.exercise-indicator');
               if (elapsedSeconds >= timing.endTime) {
-                // Exercise should be complete
-                indicator.classList.remove('bg-gray-300');
+                // Exercise is complete
+                indicator.classList.remove('bg-gray-300', 'bg-orange-500');
                 indicator.classList.add('bg-green-500');
+              } else if (elapsedSeconds >= timing.startTime && elapsedSeconds < timing.endTime) {
+                // Exercise is in progress
+                indicator.classList.remove('bg-gray-300', 'bg-green-500');
+                indicator.classList.add('bg-orange-500');
               }
             });
           };
@@ -649,7 +661,7 @@
                 
                 // Reset all indicators
                 document.querySelectorAll('.exercise-indicator').forEach(indicator => {
-                  indicator.classList.remove('bg-green-500');
+                  indicator.classList.remove('bg-green-500', 'bg-orange-500');
                   indicator.classList.add('bg-gray-300');
                 });
 
