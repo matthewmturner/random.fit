@@ -1,4 +1,4 @@
-const CACHE_NAME = "random-fit-v1";
+const CACHE_NAME = "random-fit-v2";
 const urlsToCache = [
 	"/",
 	"/index.html",
@@ -6,9 +6,11 @@ const urlsToCache = [
 	"/icons/icon-192x192.svg",
 	"/icons/icon-512x512.svg",
 	"/offline.html",
+	"/workouts.json",
 ];
 
 self.addEventListener("install", (event) => {
+	self.skipWaiting();
 	event.waitUntil(
 		caches.open(CACHE_NAME).then((cache) => {
 			return cache.addAll(urlsToCache);
@@ -16,7 +18,48 @@ self.addEventListener("install", (event) => {
 	);
 });
 
+self.addEventListener('activate', (event) => {
+	event.waitUntil(
+		caches.keys().then((cacheNames) => {
+			return Promise.all(
+				cacheNames.map((cacheName) => {
+					if (cacheName !== CACHE_NAME) {
+						return caches.delete(cacheName);
+					}
+				})
+			);
+		})
+	);
+});
+
 self.addEventListener("fetch", (event) => {
+	// Network-first for specific files
+	const networkFirstURLs = [
+		"/workouts.json",
+		"/index.html"
+	];
+	
+	// Check if the request matches any network-first URL
+	if (networkFirstURLs.some(url => event.request.url.includes(url))) {
+		event.respondWith(
+			fetch(event.request)
+				.then((response) => {
+					// Clone and cache the fresh response
+					const responseToCache = response.clone();
+					caches.open(CACHE_NAME).then((cache) => {
+						cache.put(event.request, responseToCache);
+					});
+					return response;
+				})
+				.catch(() => {
+					// If network fails, try the cache
+					return caches.match(event.request);
+				})
+		);
+		return;
+	}
+
+	// For everything else, use cache-first strategy
 	event.respondWith(
 		caches.match(event.request).then((response) => {
 			// Cache hit - return response
