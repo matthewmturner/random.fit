@@ -224,7 +224,51 @@
           workoutHTML += `<h3 class="font-semibold text-xl mb-3">${selectedDuration} Minute ${
             selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)
           } Workout</h3>`;
-          workoutHTML += '<ul class="text-left space-y-2">';
+
+          // Get warmup duration based on workout length
+          const warmupDuration = data.warmupDurations[selectedDuration.toString()];
+          const cooldownDuration = data.cooldownDuration;
+          
+          // ===== WARMUP SECTION =====
+          workoutHTML += `<div class="mb-4">
+            <h4 class="text-lg font-medium mb-2 text-blue-700">Warmup (${warmupDuration} min)</h4>
+            <div class="border-t-2 border-blue-300 mb-2"></div>
+            <ul class="text-left space-y-2">`;
+          
+          // Select random warmup exercises
+          const warmupExerciseCount = 5; // Choose 5 warmup exercises
+          const selectedWarmupExercises = [];
+          const availableWarmupExercises = [...data.warmup];
+          
+          for (let i = 0; i < Math.min(warmupExerciseCount, availableWarmupExercises.length); i++) {
+            const randomIndex = Math.floor(Math.random() * availableWarmupExercises.length);
+            const exercise = availableWarmupExercises[randomIndex];
+            availableWarmupExercises.splice(randomIndex, 1);
+            
+            selectedWarmupExercises.push({
+              ...exercise,
+              time: 45 // Each warmup exercise gets 45 seconds
+            });
+          }
+          
+          // Display warmup exercises
+          selectedWarmupExercises.forEach((exercise, index) => {
+            workoutHTML += `<li class="py-2 px-3 ${
+              index % 2 === 0 ? "bg-gray-50" : ""
+            } rounded">
+              <span class="font-medium">${exercise.name}:</span> ${exercise.time} seconds
+            </li>`;
+          });
+          
+          workoutHTML += `</ul>
+            <p class="mt-2 text-sm text-gray-600">Perform each exercise for the indicated time with minimal rest.</p>
+          </div>`;
+          
+          // ===== MAIN WORKOUT SECTION =====
+          workoutHTML += `<div class="mb-4 mt-6">
+            <h4 class="text-lg font-medium mb-2 text-green-700">Main Workout</h4>
+            <div class="border-t-2 border-green-300 mb-2"></div>
+            <ul class="text-left space-y-2">`;
 
           // Select random exercises
           const selectedExercises = [];
@@ -280,13 +324,48 @@
             workoutHTML += `<li class="py-2 px-3 ${
               index % 2 === 0 ? "bg-gray-50" : ""
             } rounded">
-          <span class="font-medium">${exercise.name}:</span> ${exerciseText}
-        </li>`;
+              <span class="font-medium">${exercise.name}:</span> ${exerciseText}
+            </li>`;
           });
 
-          workoutHTML += "</ul>";
-          workoutHTML +=
-            '<p class="mt-4 text-sm text-gray-600">Rest 60 seconds between sets and 90 seconds between exercises.</p>';
+          workoutHTML += `</ul>
+            <p class="mt-2 text-sm text-gray-600">Rest 60 seconds between sets and 90 seconds between exercises.</p>
+          </div>`;
+          
+          // ===== COOLDOWN SECTION =====
+          workoutHTML += `<div class="mt-6">
+            <h4 class="text-lg font-medium mb-2 text-purple-700">Cooldown (${cooldownDuration} min)</h4>
+            <div class="border-t-2 border-purple-300 mb-2"></div>
+            <ul class="text-left space-y-2">`;
+          
+          // Select random cooldown exercises
+          const cooldownExerciseCount = 5; // Choose 5 cooldown exercises
+          const selectedCooldownExercises = [];
+          const availableCooldownExercises = [...data.cooldown];
+          
+          for (let i = 0; i < Math.min(cooldownExerciseCount, availableCooldownExercises.length); i++) {
+            const randomIndex = Math.floor(Math.random() * availableCooldownExercises.length);
+            const exercise = availableCooldownExercises[randomIndex];
+            availableCooldownExercises.splice(randomIndex, 1);
+            
+            selectedCooldownExercises.push({
+              ...exercise,
+              time: 30 // Each cooldown stretch gets 30 seconds
+            });
+          }
+          
+          // Display cooldown exercises
+          selectedCooldownExercises.forEach((exercise, index) => {
+            workoutHTML += `<li class="py-2 px-3 ${
+              index % 2 === 0 ? "bg-gray-50" : ""
+            } rounded">
+              <span class="font-medium">${exercise.name}:</span> Hold for ${exercise.time} seconds
+            </li>`;
+          });
+          
+          workoutHTML += `</ul>
+            <p class="mt-2 text-sm text-gray-600">Hold each stretch with controlled breathing and focus on relaxation.</p>
+          </div>`;
 
           document.getElementById(
             "workout-result",
