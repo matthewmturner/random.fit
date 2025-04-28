@@ -150,5 +150,115 @@
             "type": "reps",
             "category": "core"
         }
-    ]
+    ],
+    "warmup": [
+        {
+            "name": "Light Jogging in Place",
+            "type": "time",
+            "category": "warmup"
+        },
+        {
+            "name": "Arm Circles",
+            "type": "time",
+            "category": "warmup"
+        },
+        {
+            "name": "Shoulder Rolls",
+            "type": "time",
+            "category": "warmup"
+        },
+        {
+            "name": "Hip Rotations",
+            "type": "time",
+            "category": "warmup"
+        },
+        {
+            "name": "Jumping Jacks",
+            "type": "time",
+            "category": "warmup"
+        },
+        {
+            "name": "High Knees (Light)",
+            "type": "time",
+            "category": "warmup"
+        },
+        {
+            "name": "Torso Twists",
+            "type": "time",
+            "category": "warmup"
+        },
+        {
+            "name": "Leg Swings",
+            "type": "time",
+            "category": "warmup"
+        },
+        {
+            "name": "Ankle Rotations",
+            "type": "time",
+            "category": "warmup"
+        },
+        {
+            "name": "Neck Stretches",
+            "type": "time",
+            "category": "warmup"
+        }
+    ],
+    "cooldown": [
+        {
+            "name": "Hamstring Stretch",
+            "type": "time",
+            "category": "cooldown"
+        },
+        {
+            "name": "Quad Stretch",
+            "type": "time",
+            "category": "cooldown"
+        },
+        {
+            "name": "Calf Stretch",
+            "type": "time",
+            "category": "cooldown"
+        },
+        {
+            "name": "Chest Stretch",
+            "type": "time",
+            "category": "cooldown"
+        },
+        {
+            "name": "Shoulder Stretch",
+            "type": "time",
+            "category": "cooldown"
+        },
+        {
+            "name": "Tricep Stretch",
+            "type": "time",
+            "category": "cooldown"
+        },
+        {
+            "name": "Lower Back Stretch",
+            "type": "time",
+            "category": "cooldown"
+        },
+        {
+            "name": "Hip Flexor Stretch",
+            "type": "time",
+            "category": "cooldown"
+        },
+        {
+            "name": "Child's Pose",
+            "type": "time",
+            "category": "cooldown"
+        },
+        {
+            "name": "Deep Breathing",
+            "type": "time",
+            "category": "cooldown"
+        }
+    ],
+    "warmupDurations": {
+        "30": 5,
+        "45": 10,
+        "60": 15
+    },
+    "cooldownDuration": 5
 }
