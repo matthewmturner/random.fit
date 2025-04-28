@@ -255,8 +255,9 @@
           selectedWarmupExercises.forEach((exercise, index) => {
             workoutHTML += `<li class="py-2 px-3 ${
               index % 2 === 0 ? "bg-gray-50" : ""
-            } rounded">
+            } rounded warmup-item" data-exercise-time="${exercise.time}" data-exercise-index="${index}">
               <span class="font-medium">${exercise.name}:</span> ${exercise.time} seconds
+              <span class="exercise-indicator inline-block w-3 h-3 rounded-full bg-gray-300 ml-1"></span>
             </li>`;
           });
           
@@ -315,16 +316,32 @@
           // Create workout list
           selectedExercises.forEach((exercise, index) => {
             let exerciseText = "";
+            let exerciseTimeInfo = "";
+            
             if (exercise.type === "time") {
               exerciseText = `${exercise.sets} sets of ${exercise.time} seconds`;
+              // For time-based exercises, each set is the time specified plus 60s rest between sets
+              const totalExerciseTime = exercise.sets * (exercise.time + 60);
+              exerciseTimeInfo = `data-exercise-time="${totalExerciseTime}" data-sets="${exercise.sets}"`;
             } else if (exercise.type === "reps") {
               exerciseText = `${exercise.sets} sets of ${exercise.reps} reps`;
+              // For rep-based exercises, calculate 5 seconds per rep plus 60s rest between sets
+              const setTime = exercise.reps * 5;
+              const totalExerciseTime = exercise.sets * (setTime + 60);
+              exerciseTimeInfo = `data-exercise-time="${totalExerciseTime}" data-sets="${exercise.sets}" data-time-per-set="${setTime}"`;
+            }
+
+            // Create the exercise item with completion indicators
+            let setIndicators = '';
+            for (let i = 0; i < exercise.sets; i++) {
+              setIndicators += `<span class="exercise-indicator inline-block w-3 h-3 rounded-full bg-gray-300 ml-1" data-set="${i+1}"></span>`;
             }
 
             workoutHTML += `<li class="py-2 px-3 ${
               index % 2 === 0 ? "bg-gray-50" : ""
-            } rounded">
+            } rounded exercise-item" ${exerciseTimeInfo} data-exercise-index="${index}">
               <span class="font-medium">${exercise.name}:</span> ${exerciseText}
+              <div class="mt-1">${setIndicators}</div>
             </li>`;
           });
 
@@ -358,8 +375,9 @@
           selectedCooldownExercises.forEach((exercise, index) => {
             workoutHTML += `<li class="py-2 px-3 ${
               index % 2 === 0 ? "bg-gray-50" : ""
-            } rounded">
+            } rounded cooldown-item" data-exercise-time="${exercise.time}" data-exercise-index="${index}">
               <span class="font-medium">${exercise.name}:</span> Hold for ${exercise.time} seconds
+              <span class="exercise-indicator inline-block w-3 h-3 rounded-full bg-gray-300 ml-1"></span>
             </li>`;
           });
           
@@ -431,6 +449,166 @@
 
           // Update progress bar and timer
           const progressBar = document.getElementById("progress-bar");
+          
+          // Calculate exercise timing information
+          const calculateExerciseTiming = () => {
+            // Calculate warmup section timing
+            let totalTime = 0;
+            const warmupItems = document.querySelectorAll('.warmup-item');
+            const warmupTimings = [];
+            
+            warmupItems.forEach((item, index) => {
+              const exerciseTime = parseInt(item.getAttribute('data-exercise-time'));
+              warmupTimings.push({
+                startTime: totalTime,
+                endTime: totalTime + exerciseTime,
+                element: item
+              });
+              totalTime += exerciseTime;
+              
+              // Short 5-second rest between warmup exercises
+              if (index < warmupItems.length - 1) {
+                totalTime += 5;
+              }
+            });
+            
+            // Add transition time between warmup and main workout (30 seconds)
+            totalTime += 30;
+            
+            // Calculate main workout section timing
+            const exerciseItems = document.querySelectorAll('.exercise-item');
+            const exerciseTimings = [];
+            
+            exerciseItems.forEach((item, index) => {
+              const sets = parseInt(item.getAttribute('data-sets'));
+              const totalExerciseTime = parseInt(item.getAttribute('data-exercise-time'));
+              
+              // For each set, create a timing entry
+              const exerciseSetsTimings = [];
+              let exerciseStartTime = totalTime;
+              
+              // If rep-based, get time per set
+              const timePerSet = item.getAttribute('data-time-per-set') 
+                ? parseInt(item.getAttribute('data-time-per-set')) 
+                : null;
+                
+              for (let i = 0; i < sets; i++) {
+                // Find the indicator for this set
+                const indicator = item.querySelector(`[data-set="${i+1}"]`);
+                
+                // If rep-based, each set is timePerSet + rest (except last set)
+                // If time-based, we already calculated the total time including rest periods
+                let setDuration;
+                if (timePerSet !== null) {
+                  setDuration = timePerSet;
+                  // Add rest time if not the last set
+                  if (i < sets - 1) {
+                    setDuration += 60; // 60s rest between sets
+                  }
+                } else {
+                  // For time-based, divide the total time evenly among sets
+                  // We already have rest included in the total exercise time
+                  setDuration = totalExerciseTime / sets;
+                }
+                
+                exerciseSetsTimings.push({
+                  startTime: exerciseStartTime,
+                  endTime: exerciseStartTime + setDuration,
+                  element: indicator
+                });
+                
+                exerciseStartTime += setDuration;
+              }
+              
+              exerciseTimings.push({
+                sets: exerciseSetsTimings,
+                element: item
+              });
+              
+              totalTime = exerciseSetsTimings[sets - 1].endTime;
+              
+              // Add 90 seconds rest between exercises (except for the last exercise)
+              if (index < exerciseItems.length - 1) {
+                totalTime += 90;
+              }
+            });
+            
+            // Add transition time between main workout and cooldown (30 seconds)
+            totalTime += 30;
+            
+            // Calculate cooldown section timing
+            const cooldownItems = document.querySelectorAll('.cooldown-item');
+            const cooldownTimings = [];
+            
+            cooldownItems.forEach((item, index) => {
+              const exerciseTime = parseInt(item.getAttribute('data-exercise-time'));
+              cooldownTimings.push({
+                startTime: totalTime,
+                endTime: totalTime + exerciseTime,
+                element: item
+              });
+              totalTime += exerciseTime;
+              
+              // 5-second transition between cooldown exercises
+              if (index < cooldownItems.length - 1) {
+                totalTime += 5;
+              }
+            });
+            
+            return {
+              warmup: warmupTimings,
+              exercises: exerciseTimings,
+              cooldown: cooldownTimings
+            };
+          };
+          
+          const timings = calculateExerciseTiming();
+          
+          // Update indicators based on elapsed time
+          const updateIndicators = (elapsedSeconds) => {
+            // Update warmup indicators
+            timings.warmup.forEach(timing => {
+              const indicator = timing.element.querySelector('.exercise-indicator');
+              if (elapsedSeconds >= timing.endTime) {
+                // Exercise is complete
+                indicator.classList.remove('bg-gray-300', 'bg-orange-500');
+                indicator.classList.add('bg-green-500');
+              } else if (elapsedSeconds >= timing.startTime && elapsedSeconds < timing.endTime) {
+                // Exercise is in progress
+                indicator.classList.remove('bg-gray-300', 'bg-green-500');
+                indicator.classList.add('bg-orange-500');
+              }
+            });
+            
+            // Update main workout indicators
+            timings.exercises.forEach(exercise => {
+              exercise.sets.forEach(set => {
+                if (elapsedSeconds >= set.endTime) {
+                  // Set is complete
+                  set.element.classList.remove('bg-gray-300', 'bg-orange-500');
+                  set.element.classList.add('bg-green-500');
+                } else if (elapsedSeconds >= set.startTime && elapsedSeconds < set.endTime) {
+                  // Set is in progress
+                  set.element.classList.remove('bg-gray-300', 'bg-green-500');
+                  set.element.classList.add('bg-orange-500');
+                }
+              });
+            });
+            
+            // Update cooldown indicators
+            timings.cooldown.forEach(timing => {
+              const indicator = timing.element.querySelector('.exercise-indicator');
+              if (elapsedSeconds >= timing.endTime) {
+                // Exercise is complete
+                indicator.classList.remove('bg-gray-300', 'bg-orange-500');
+                indicator.classList.add('bg-green-500');
+              } else if (elapsedSeconds >= timing.startTime && elapsedSeconds < timing.endTime) {
+                // Exercise is in progress
+                indicator.classList.remove('bg-gray-300', 'bg-green-500');
+                indicator.classList.add('bg-orange-500');
+              }
+            });
+          };
 
           const timer = setInterval(() => {
             const elapsedTime = Date.now() - startTime;
@@ -450,6 +628,9 @@
               .padStart(2, "0")}:${minutes
               .toString()
               .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+              
+            // Update exercise completion indicators
+            updateIndicators(elapsedSeconds);
 
             // If workout is complete
             if (elapsedTime >= durationMs) {
@@ -477,6 +658,12 @@
 
                 // Reset progress bar
                 progressBar.style.width = "0%";
+                
+                // Reset all indicators
+                document.querySelectorAll('.exercise-indicator').forEach(indicator => {
+                  indicator.classList.remove('bg-green-500', 'bg-orange-500');
+                  indicator.classList.add('bg-gray-300');
+                });
 
                 // Show start button
                 document
