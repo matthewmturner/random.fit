@@ -6,7 +6,22 @@
             "category": "bodyweight"
         },
         {
+            "name": "Triangle Push-ups",
+            "type": "reps",
+            "category": "bodyweight"
+        },
+        {
             "name": "Bodyweight Squats",
+            "type": "reps",
+            "category": "bodyweight"
+        },
+        {
+            "name": "Bodyweight Squat Jumps",
+            "type": "reps",
+            "category": "bodyweight"
+        },
+        {
+            "name": "Bodyweight Side Squat and Twists",
             "type": "reps",
             "category": "bodyweight"
         },
@@ -16,23 +31,8 @@
             "category": "bodyweight"
         },
         {
-            "name": "Burpees",
+            "name": "Split Lunges",
             "type": "reps",
-            "category": "bodyweight"
-        },
-        {
-            "name": "Mountain Climbers",
-            "type": "time",
-            "category": "bodyweight"
-        },
-        {
-            "name": "Jumping Jacks",
-            "type": "time",
-            "category": "bodyweight"
-        },
-        {
-            "name": "High Knees",
-            "type": "time",
             "category": "bodyweight"
         },
         {
@@ -43,11 +43,6 @@
         {
             "name": "Jumping Lunges",
             "type": "reps",
-            "category": "bodyweight"
-        },
-        {
-            "name": "Lateral Jumps",
-            "type": "time",
             "category": "bodyweight"
         },
         {
@@ -66,7 +61,7 @@
             "category": "strength"
         },
         {
-            "name": "Shoulder Press",
+            "name": "Barbell Push Press",
             "type": "reps",
             "category": "strength"
         },
@@ -76,27 +71,7 @@
             "category": "strength"
         },
         {
-            "name": "Bicep Curls",
-            "type": "reps",
-            "category": "strength"
-        },
-        {
-            "name": "Tricep Extensions",
-            "type": "reps",
-            "category": "strength"
-        },
-        {
-            "name": "Lat Pulldowns",
-            "type": "reps",
-            "category": "strength"
-        },
-        {
-            "name": "Leg Press",
-            "type": "reps",
-            "category": "strength"
-        },
-        {
-            "name": "Dumbbell Lunges",
+            "name": "Clean",
             "type": "reps",
             "category": "strength"
         },
@@ -196,6 +171,26 @@
             "name": "Ankle Rotations",
             "type": "time",
             "category": "warmup"
+        },
+        {
+            "name": "Burpees",
+            "type": "reps",
+            "category": "warmup"
+        },
+        {
+            "name": "Mountain Climbers",
+            "type": "time",
+            "category": "warmup"
+        },
+        {
+            "name": "Jumping Jacks",
+            "type": "time",
+            "category": "bodyweight"
+        },
+        {
+            "name": "High Knees",
+            "type": "time",
+            "category": "bodyweight"
         },
         {
             "name": "Neck Stretches",
